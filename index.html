@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID Mobility Visualization</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        canvas {
+            max-width: 800px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>COVID Mobility Visualization</h1>
+
+    <canvas id="lineChart"></canvas>
+    <canvas id="barChart"></canvas>
+    <canvas id="pieChart"></canvas>
+
+    <script>
+        (async () => {
+            // Function to fetch and parse CSV data
+            async function fetchData(csvData) {
+                const response = await fetch(csvData);
+                const data = await response.text();
+                return data;
+            }
+
+            // Function to create a Chart.js line chart
+            function createLineChart(labels, datasets, chartId, chartLabel) {
+                const ctx = document.getElementById(chartId).getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: datasets,
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        title: {
+                            display: true,
+                            text: chartLabel,
+                        },
+                    },
+                });
+            }
+
+            // Function to create a Chart.js bar chart
+            function createBarChart(labels, datasets, chartId, chartLabel) {
+                const ctx = document.getElementById(chartId).getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: datasets,
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        title: {
+                            display: true,
+                            text: chartLabel,
+                        },
+                    },
+                });
+            }
+
+            // Function to create a Chart.js pie chart
+            function createPieChart(labels, datasets, chartId, chartLabel) {
+                const ctx = document.getElementById(chartId).getContext('2d');
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: datasets,
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        title: {
+                            display: true,
+                            text: chartLabel,
+                        },
+                    },
+                });
+            }
+
+            // Main function to load and visualize data
+            async function main() {
+                const csvData = await fetchData('ASSIGMNET2-DATA/2022_ZA_Region_Mobility_Report.csv');
+
+                // Parse CSV data
+                const rows = csvData.split('\n');
+                const labels = rows[0].split(',');
+
+                // Prepare data for each chart type 
+                const lineChartLabels = labels.slice(1);
+                const barChartLabels = labels.slice(1);
+                const pieChartLabels = labels.slice(1);
+
+                const lineChartData = rows.slice(1).map(row => row.split(',').map(parseFloat));
+                const barChartData = rows.slice(1).map(row => row.split(',').map(parseFloat));
+                const pieChartData = rows.slice(1).map(row => row.split(',').map(parseFloat));
+
+                // Create charts
+                createLineChart(lineChartLabels, lineChartData, 'lineChart', 'Line Chart Description');
+                createBarChart(barChartLabels, barChartData, 'barChart', 'Bar Chart Description');
+                createPieChart(pieChartLabels, pieChartData, 'pieChart', 'Pie Chart Description');
+            }
+
+            // Execute the main function
+            main();
+        })();
+    </script>
+</body>
+
+</html>
